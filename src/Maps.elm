@@ -6,9 +6,9 @@ module Maps exposing
     , mapView
     , updateMap
     , updateMarkers
+    , updateAreas
     , Msg
     , Model
-    , updateAreas
     )
 
 {-| Functions for creating a maps program and maniuplating the maps model.
@@ -40,6 +40,7 @@ You can use the functions below to display a map.
 
 @docs updateMap
 @docs updateMarkers
+@docs updateAreas
 
 
 # Types
@@ -121,6 +122,8 @@ updateMarkers thisupdate =
     opaqueModel <| Maps.updateMarkers thisupdate
 
 
+{-| Change the areas inside of the model
+-}
 updateAreas : (List Area -> List Area) -> Model msg -> Model msg
 updateAreas thisupdate =
     opaqueModel <| Maps.updateAreas thisupdate
