@@ -1,9 +1,10 @@
-module Markers exposing (..)
+module SearchMarkers exposing (..)
 
-import Html exposing (program)
+import Html
 import Html.Events exposing (onInput)
 import Geocoding
 import Http
+import Browser
 
 import Maps exposing (Msg)
 import Maps.Geo exposing (LatLng, Bounds)
@@ -18,12 +19,13 @@ type Msg
 
 apiKey = "AIzaSyCkOFxL5NF1feuebbB6PW8fP3SDg1aa6tM"
 
-main = program
-  { init = init
+main = Browser.element
+  { init = \() -> init
   , update = update
   , subscriptions = subscriptions
   , view = view
   }
+
 
 init =
   ( { map = Maps.defaultModel

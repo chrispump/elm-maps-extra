@@ -6,6 +6,7 @@ module Maps.Internal.Utils exposing
     )
 
 
+wrap : number -> number -> number -> number
 wrap min max n =
     if n < min then
         wrap min max <| n + (max - min)
@@ -17,6 +18,7 @@ wrap min max n =
         n
 
 
+sinh : Float -> Float
 sinh x =
     ((e ^ x) - (e ^ -x)) / 2
 

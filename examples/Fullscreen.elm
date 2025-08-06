@@ -1,8 +1,6 @@
 module FullScreen exposing (..)
 
 import Task
-import Browser.Dom
-
 import Browser
 import Browser.Dom
 import Browser.Events

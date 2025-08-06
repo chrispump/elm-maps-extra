@@ -36,7 +36,7 @@ drag thisoffset state =
         StartDrag thisstart ->
             Drag thisstart thisoffset
 
-        Drag thisstart thisend ->
+        Drag _ thisend ->
             Drag thisend thisoffset
 
 

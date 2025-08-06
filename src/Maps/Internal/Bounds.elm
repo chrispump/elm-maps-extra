@@ -20,8 +20,8 @@ The Bounds type is used for defining a geographical area.
 
 -}
 
-import Maps.Internal.LatLng as LatLng exposing (LatLng)
-import Maps.Internal.Screen as Screen exposing (ZoomLevel)
+import Maps.Internal.LatLng exposing (LatLng)
+import Maps.Internal.Screen exposing (ZoomLevel)
 import Maps.Internal.Utils exposing (wrap)
 
 

@@ -17,8 +17,8 @@ type Msg
 
 apiKey = "AIzaSyCkOFxL5NF1feuebbB6PW8fP3SDg1aa6tM"
 
-main = program
-  { init = init
+main = Browser.element
+  { init = \() -> init
   , update = update
   , subscriptions = subscriptions
   , view = view

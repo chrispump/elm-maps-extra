@@ -5,7 +5,7 @@ module Maps.Internal.Zoom exposing
     )
 
 import Html
-import Html.Events exposing (on)
+import Html.Events
 import Json.Decode as Json
 import Maps.Internal.Pinch as Pinch exposing (Pinch)
 import Maps.Internal.Screen as Screen exposing (ZoomLevel)

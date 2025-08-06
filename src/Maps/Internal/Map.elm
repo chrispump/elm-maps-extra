@@ -45,7 +45,7 @@ The Map type is used for configuring the view of the map.
 
 import Maps.Internal.Bounds as Bounds exposing (Bounds)
 import Maps.Internal.Drag as Drag exposing (Drag)
-import Maps.Internal.LatLng as LatLng exposing (LatLng)
+import Maps.Internal.LatLng exposing (LatLng)
 import Maps.Internal.Screen as Screen exposing (ZoomLevel)
 import Maps.Internal.Tile as Tile exposing (Tile)
 import Maps.Internal.Utils exposing (cartesianMap, wrap)
@@ -179,9 +179,7 @@ diff newMap oldMap =
     , Scaled <|
         (\thiszoom -> 2 ^ thiszoom) <|
             toFloat <|
-                (-)
-                    (ceiling newMap.zoom)
-                    (ceiling oldMap.zoom)
+                (ceiling newMap.zoom - ceiling oldMap.zoom)
     ]
 
 

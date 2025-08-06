@@ -43,7 +43,6 @@ like the [mouse event](https://developer.mozilla.org/en-US/docs/Web/API/MouseEve
 import Json.Decode as Json
 import Maps.Internal.LatLng exposing (LatLng)
 import Maps.Internal.Tile as Tile
-import Maps.Internal.Utils exposing (wrap)
 
 
 {-| The Offset type defines an offset as it relates pixels making up a map.
