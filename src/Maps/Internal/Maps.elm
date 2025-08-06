@@ -4,7 +4,7 @@ module Maps.Internal.Maps exposing
     , update
     , subscriptions
     , view
-    , defaultModel, mapView, updateMap, updateMarkers
+    , defaultModel, mapView, updateAreas, updateMap, updateMarkers
     )
 
 {-| The Maps library contains the functions neccessary for an
@@ -44,18 +44,21 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.Events
 import Html.Keyed
-import Json.Decode as Json
-import List.Extra as List
-import Maps.Internal.Bounds as Bounds exposing (Bounds)
+import Json.Decode
+import List.Extra
+import Maps.Internal.Area as Area exposing (Area)
 import Maps.Internal.Drag as Drag exposing (Drag)
-import Maps.Internal.LatLng as LatLng exposing (LatLng)
+import Maps.Internal.LatLng as LatLng
 import Maps.Internal.Map as Map exposing (Map)
 import Maps.Internal.Marker as Marker exposing (Marker)
+import Maps.Internal.Options exposing (Options, defaultOptions)
 import Maps.Internal.Pinch as Pinch exposing (Pinch)
 import Maps.Internal.Screen as Screen exposing (Offset, TwoFingers, ZoomLevel)
-import Maps.Internal.Tile as Tile exposing (Tile)
+import Maps.Internal.Tile as Tile
 import Maps.Internal.Utils exposing (flip)
 import Maps.Internal.Zoom as Zoom
+import Svg exposing (svg)
+import Svg.Attributes
 
 
 {-| The map has events for dragging, zooming and setting the bounds displayed by the map.
@@ -79,8 +82,10 @@ type alias Model msg =
     { map : Map
     , cache : List Map
     , markers : List (Marker msg)
+    , areas : List Area
     , drag : Maybe Drag
     , pinch : Maybe Pinch
+    , options : Options
     }
 
 
@@ -88,7 +93,7 @@ updateMap : (Map -> Map) -> Model msg -> Model msg
 updateMap thisupdate model =
     { model
         | map = thisupdate model.map
-        , cache = model.map :: model.cache |> List.uniqueBy (.zoom >> ceiling)
+        , cache = model.map :: model.cache |> List.Extra.uniqueBy (.zoom >> ceiling)
     }
 
 
@@ -96,6 +101,13 @@ updateMarkers : (List (Marker msg) -> List (Marker msg)) -> Model msg -> Model m
 updateMarkers thisupdate model =
     { model
         | markers = thisupdate model.markers
+    }
+
+
+updateAreas : (List Area -> List Area) -> Model msg -> Model msg
+updateAreas thisupdate model =
+    { model
+        | areas = thisupdate model.areas
     }
 
 
@@ -116,8 +128,10 @@ defaultModel =
     { map = map
     , cache = []
     , markers = []
+    , areas = []
     , drag = Nothing
     , pinch = Nothing
+    , options = defaultOptions
     }
 
 
@@ -179,19 +193,19 @@ update msg model =
         Zoom offset zoom ->
             ( updateMap (Map.zoomTo zoom offset) model, Cmd.none )
 
-        ExternalMsg othermsg ->
+        ExternalMsg _ ->
             ( model, Cmd.none )
 
 
 {-| -}
 subscriptions : Model msg -> Sub (Msg msg)
-subscriptions map =
+subscriptions _ =
     Sub.none
 
 
 {-| -}
 view : Model msg -> Html (Msg msg)
-view ({ map, cache, markers, pinch, drag } as model) =
+view { map, cache, markers, areas, pinch, drag, options } =
     Html.div
         (List.map (\( p, v ) -> Attr.style p v)
             [ ( "width", String.fromFloat map.width ++ "px" )
@@ -204,7 +218,7 @@ view ({ map, cache, markers, pinch, drag } as model) =
             , ( "user-select", "none" )
             , ( "background-color", "#ddd" )
             ]
-            ++ zoomEvents map.zoom
+            ++ zoomEvents map.zoom options
         )
     <|
         let
@@ -223,8 +237,8 @@ view ({ map, cache, markers, pinch, drag } as model) =
             , Attr.style "height" <| String.fromFloat map.height ++ "px"
             , Attr.style "overflow" "hidden"
             , Html.Events.custom "mouseDown" <|
-                Json.map (\v -> { message = v, preventDefault = True, stopPropagation = False }) <|
-                    Json.fail "No interaction"
+                Json.Decode.map (\v -> { message = v, preventDefault = True, stopPropagation = False }) <|
+                    Json.Decode.fail "No interaction"
             ]
           <|
             List.map (\cachedMap -> tilesView (Map.diff zoomedMap cachedMap) cachedMap) <|
@@ -237,23 +251,42 @@ view ({ map, cache, markers, pinch, drag } as model) =
                 , ( "height", String.fromFloat map.height ++ "px" )
                 , ( "overflow", "hidden" )
                 ]
-                ++ dragEvents drag
+                ++ dragEvents drag options
             )
             [ tilesView transforms map
             ]
+
+        -- Html layer for markers
         , Html.div
-            (List.map (\( p, v ) -> Attr.style p v)
-                [ ( "position", "absolute" )
-                , ( "width", String.fromFloat map.width ++ "px" )
-                , ( "height", String.fromFloat map.height ++ "px" )
-                , ( "overflow", "hidden" )
-                , ( "pointer-events", "none" )
-                ]
-            )
-          <|
-            List.map (Html.map ExternalMsg) <|
-                List.map (Marker.view zoomedMap) <|
-                    markers
+            [ Attr.style "position" "absolute"
+            , Attr.style "top" "0"
+            , Attr.style "left" "0"
+            , Attr.style "width" (String.fromFloat map.width ++ "px")
+            , Attr.style "height" (String.fromFloat map.height ++ "px")
+            , Attr.style "overflow" "hidden"
+            , Attr.style "pointer-events" "none"
+            ]
+            (List.map (Html.map ExternalMsg) (List.map (Marker.view zoomedMap) markers))
+
+        -- Svg layer for areas
+        , Html.div
+            [ Attr.style "position" "absolute"
+            , Attr.style "top" "0"
+            , Attr.style "left" "0"
+            , Attr.style "width" (String.fromFloat map.width ++ "px")
+            , Attr.style "height" (String.fromFloat map.height ++ "px")
+            , Attr.style "overflow" "hidden"
+            , Attr.style "pointer-events" "none"
+            ]
+            [ Html.map ExternalMsg <|
+                Svg.svg
+                    [ Svg.Attributes.width (String.fromFloat map.width)
+                    , Svg.Attributes.height (String.fromFloat map.height)
+                    , Svg.Attributes.style "overflow: visible"
+                    ]
+                    [ Svg.g [] (List.map (Area.view (Screen.offsetFromLatLng zoomedMap)) areas)
+                    ]
+            ]
         ]
 
 
@@ -278,15 +311,23 @@ tilesView transforms map =
     Html.Keyed.node "div"
         (List.map (\( p, v ) -> Attr.style p v) <| Map.transformationStyle map.width map.height <| transforms)
     <|
-        List.map (\(( url, offset ) as tile) -> ( url, Tile.view map.tileSize tile )) <|
+        List.map (\(( url, _ ) as tile) -> ( url, Tile.view map.tileSize tile )) <|
             Map.tiles map
 
 
-zoomEvents : ZoomLevel -> List (Html.Attribute (Msg msg))
-zoomEvents zoom =
-    Zoom.events { zoom = Zoom, pinchStart = PinchStart, pinchTo = PinchTo, pinchStop = PinchStop } zoom
+zoomEvents : ZoomLevel -> Options -> List (Html.Attribute (Msg msg))
+zoomEvents zoom options =
+    if options.enableZoom then
+        Zoom.events { zoom = Zoom, pinchStart = PinchStart, pinchTo = PinchTo, pinchStop = PinchStop } zoom
+
+    else
+        []
 
 
-dragEvents : Maybe Drag -> List (Html.Attribute (Msg msg))
-dragEvents drag =
-    Drag.events { dragStart = DragStart, dragTo = DragTo, dragStop = DragStop } drag
+dragEvents : Maybe Drag -> Options -> List (Html.Attribute (Msg msg))
+dragEvents drag options =
+    if options.enableDrag then
+        Drag.events { dragStart = DragStart, dragTo = DragTo, dragStop = DragStop } drag
+
+    else
+        []

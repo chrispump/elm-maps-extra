@@ -8,6 +8,7 @@ module Maps exposing
     , updateMarkers
     , Msg
     , Model
+    , updateAreas
     )
 
 {-| Functions for creating a maps program and maniuplating the maps model.
@@ -52,6 +53,7 @@ Use the functions above to maniuplate and extract information from them.
 -}
 
 import Html exposing (Html)
+import Maps.Area exposing (Area)
 import Maps.Internal.Maps as Maps
 import Maps.Internal.OpaqueTypes as OpaqueTypes exposing (Model(..), opaqueModel, transparentMap)
 import Maps.Map exposing (Map)
@@ -117,6 +119,11 @@ See [Maps.Marker](./Maps-Marker) for documentation of the Marker functions.
 updateMarkers : (List (Marker msg) -> List (Marker msg)) -> Model msg -> Model msg
 updateMarkers thisupdate =
     opaqueModel <| Maps.updateMarkers thisupdate
+
+
+updateAreas : (List Area -> List Area) -> Model msg -> Model msg
+updateAreas thisupdate =
+    opaqueModel <| Maps.updateAreas thisupdate
 
 
 {-| The default model is a map zoomed into Sydney, Australia with no markers.
