@@ -3,7 +3,7 @@
   "name": "chrispump/elm-maps-extra",
   "summary": "An Elm library for interactive maps based on kennib/elm-maps",
   "license": "BSD-3-Clause",
-  "version": "4.2.2",
+  "version": "1.0.0",
   "exposed-modules": [
     "Maps",
     "Maps.Geo",
