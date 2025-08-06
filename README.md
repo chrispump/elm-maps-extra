@@ -1,4 +1,4 @@
-# Elm Maps
+# elm-maps-extra
 
 An Elm library for interactive maps, originally developed by [kennib](https://github.com/kennib/elm-maps) and further modified by [4onen](https://github.com/4onen/elm-maps).
 
