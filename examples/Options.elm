@@ -2,12 +2,14 @@ module Areas exposing (..)
 
 import Browser
 import Maps
-import Maps.Map as Map
 import Maps.Geo
+import Maps.Map as Map
+
 
 flensburg : Maps.Geo.LatLng
 flensburg =
     Maps.Geo.latLng 54.78827 9.43694
+
 
 {-| This example how to use options to disable dragging and zooming of the map.
 -}
@@ -19,6 +21,7 @@ init =
     , Cmd.none
     )
 
+
 main =
     Browser.element
         { init = \() -> init
@@ -26,5 +29,3 @@ main =
         , subscriptions = Maps.subscriptions
         , view = Maps.view
         }
-
-
