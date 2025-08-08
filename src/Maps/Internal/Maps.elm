@@ -4,7 +4,7 @@ module Maps.Internal.Maps exposing
     , update
     , subscriptions
     , view
-    , defaultModel, mapView, updateAreas, updateMap, updateMarkers
+    , defaultModel, mapView, updateAreas, updateMap, updateMarkers, updateOptions
     )
 
 {-| The Maps library contains the functions neccessary for an
@@ -57,7 +57,7 @@ import Maps.Internal.Screen as Screen exposing (Offset, TwoFingers, ZoomLevel)
 import Maps.Internal.Tile as Tile
 import Maps.Internal.Utils exposing (flip)
 import Maps.Internal.Zoom as Zoom
-import Svg exposing (svg)
+import Svg
 import Svg.Attributes
 
 
@@ -108,6 +108,13 @@ updateAreas : (List Area -> List Area) -> Model msg -> Model msg
 updateAreas thisupdate model =
     { model
         | areas = thisupdate model.areas
+    }
+
+
+updateOptions : (Options -> Options) -> Model msg -> Model msg
+updateOptions thisupdate model =
+    { model
+        | options = thisupdate model.options
     }
 
 

@@ -7,6 +7,7 @@ module Maps exposing
     , updateMap
     , updateMarkers
     , updateAreas
+    , updateOptions
     , Msg
     , Model
     )
@@ -41,6 +42,7 @@ You can use the functions below to display a map.
 @docs updateMap
 @docs updateMarkers
 @docs updateAreas
+@docs updateOptions
 
 
 # Types
@@ -57,6 +59,7 @@ import Html exposing (Html)
 import Maps.Area exposing (Area)
 import Maps.Internal.Maps as Maps
 import Maps.Internal.OpaqueTypes as OpaqueTypes exposing (Model(..), opaqueModel, transparentMap)
+import Maps.Internal.Options exposing (Options)
 import Maps.Map exposing (Map)
 import Maps.Marker exposing (Marker)
 
@@ -123,10 +126,45 @@ updateMarkers thisupdate =
 
 
 {-| Change the areas inside of the model
+
+For example, add some areas to the map:
+
+    import Maps.Area exposing (Area, create, withRotation, withBorder, withFill)
+    import Maps.Geo exposing (latLng)
+
+    let
+      areas =
+        [ ( latLng 54.797 9.425, latLng 54.794 9.435 )
+        , ( latLng 54.782 9.436, latLng 54.78 9.438 )
+        ]
+        |> List.map (\( topLeft, bottomRight ) ->
+            create topLeft bottomRight
+              |> withRotation 30
+              |> withBorder { width = 2, color = "blue" }
+              |> withFill "rgba(0, 128, 255, 0.4)"
+          )
+    in
+      model
+      |> updateAreas (\_ -> areas)
+
 -}
 updateAreas : (List Area -> List Area) -> Model msg -> Model msg
 updateAreas thisupdate =
     opaqueModel <| Maps.updateAreas thisupdate
+
+
+{-| Change the options inside of the model
+For example, disable dragging and zooming of the map:
+
+    import Maps.Internal.Options exposing (Options)
+
+    model
+    |> updateOptions (\o -> { o | enableDrag = False, enablePinch = False, enableZoom = False })
+
+-}
+updateOptions : (Options -> Options) -> Model msg -> Model msg
+updateOptions thisupdate =
+    opaqueModel <| Maps.updateOptions thisupdate
 
 
 {-| The default model is a map zoomed into Sydney, Australia with no markers.
