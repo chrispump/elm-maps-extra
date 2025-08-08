@@ -37,7 +37,7 @@ Below are working examples showcasing the different features of the library:
 | Geocode Search    | [Search.elm](https://github.com/chrispump/elm-maps-extra/blob/master/examples/Search.elm)               | [Live](https://kennib.github.io/elm-maps/examples/Search)        |
 | Geocode + Markers | [SearchMarkers.elm](https://github.com/chrispump/elm-maps-extra/blob/master/examples/SearchMarkers.elm) | [Live](https://kennib.github.io/elm-maps/examples/SearchMarkers) |
 | Draw Areas        | [Areas.elm](https://github.com/chrispump/elm-maps-extra/blob/main/examples/Areas.elm)                   | -                                                                |
-| Options           | [Options.elm](https://github.com/chrispump/elm-maps-extra/blob/main/examples/Areas.elm)                 | -                                                                |
+| Options           | [Options.elm](https://github.com/chrispump/elm-maps-extra/blob/main/examples/Options.elm)               | -                                                                |
 
 ---
 
