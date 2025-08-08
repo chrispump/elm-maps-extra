@@ -55,6 +55,13 @@ areas =
           |> Area.withFill style.fill
       )
 
+init =
+    ( Maps.defaultModel
+        |> Maps.updateMap (Map.setZoom 13 >> Map.moveTo flensburg)
+        |> Maps.updateAreas (\_ -> areas)
+    , Cmd.none
+    )
+
 
 main =
     Browser.element
@@ -65,9 +72,3 @@ main =
         }
 
 
-init =
-    ( Maps.defaultModel
-        |> Maps.updateMap (Map.setZoom 13 >> Map.moveTo flensburg)
-        |> Maps.updateAreas (\_ -> areas)
-    , Cmd.none
-    )
