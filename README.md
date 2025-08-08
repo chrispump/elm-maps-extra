@@ -2,7 +2,7 @@
 
 An Elm library for interactive maps, originally developed by [kennib](https://github.com/kennib/elm-maps) and further modified by [4onen](https://github.com/4onen/elm-maps).
 
-This library allows you to embed interactive, tile-based maps into your Elm applications with support for markers and now also polygonal areas.
+This library allows you to embed interactive, tile-based maps into your Elm applications with support for markers and now also polygonal areas, as well as various options to customize the map's behavior.
 
 ---
 
@@ -37,6 +37,7 @@ Below are working examples showcasing the different features of the library:
 | Geocode Search    | [Search.elm](https://github.com/chrispump/elm-maps-extra/blob/master/examples/Search.elm)               | [Live](https://kennib.github.io/elm-maps/examples/Search)        |
 | Geocode + Markers | [SearchMarkers.elm](https://github.com/chrispump/elm-maps-extra/blob/master/examples/SearchMarkers.elm) | [Live](https://kennib.github.io/elm-maps/examples/SearchMarkers) |
 | Draw Areas        | [Areas.elm](https://github.com/chrispump/elm-maps-extra/blob/main/examples/Areas.elm)                   | -                                                                |
+| Options           | [Options.elm](https://github.com/chrispump/elm-maps-extra/blob/main/examples/Areas.elm)                 | -                                                                |
 
 ---
 
